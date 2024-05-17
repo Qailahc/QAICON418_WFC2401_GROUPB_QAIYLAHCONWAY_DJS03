@@ -1,4 +1,4 @@
-// Importing necessary data from the data.js file - unchnaged
+// Importing necessary data from the data.js file - unchanged
 import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
 
 // Helper function to get a DOM element by its selector
@@ -35,7 +35,7 @@ const createBookPreviews = (books, container) => {     // is defined as an arrow
 // Function to create and append options to a select element
 // This function is useful for populating dropdown menus based on dynamic data
 
-const createOptions = (options, defaultOption, container) => {  // defined as an arrow function - 
+const createOptions = (options, defaultOption, container) => {  // defined as an arrow function 
   const fragment = document.createDocumentFragment();           // creating a Document Fragment
   fragment.appendChild(new Option(defaultOption, "any"));       // creating and appending the Default Option
   Object.entries(options).forEach(([id, name]) => {             // iterating Over the Options Object
@@ -99,7 +99,7 @@ const applySearchFilters = (filters) => {
   });
 };
 
-// Event listener function to handle form submissions
+// Event listener function to handle form submissions 
 // Function facilitates handling form submissions in a clean and reusable way - event listener function designed to handle form submissions
 const handleFormSubmit = (formSelector, handler) => {
   getElement(formSelector).addEventListener("submit", (event) => { // Attaching the Event Listener
