@@ -14,7 +14,7 @@ let matches = books;  // Initially, matches contain all books
 // creates a button for each book with an image, title, and author, 
 // and then appends all these buttons to the container in one operation using a DocumentFragment for better performance
 
-const createBookPreviews = (books, container) => {     // is defined as an arrow function 
+const bookPreviews = (books, container) => {     // is defined as an arrow function 
   const fragment = document.createDocumentFragment();
   books.forEach(({ author, id, image, title }) => {    // iterate over each book in the books array
     const element = document.createElement("button");  // creating new button
@@ -47,7 +47,7 @@ const createOptions = (options, defaultOption, container) => {  // defined as an
 // Function to apply a theme (night or day) to the document
 // function adjusts the theme of the web page by changing the values of the CSS custom properties --color-dark and --color-light
 // shorter  version 
-const applyTheme = (theme) => {
+const colourTheme = (theme) => {
   const isNight = theme === "night";
   document.documentElement.style.setProperty("--color-dark", isNight ? "255, 255, 255" : "10, 10, 20");
   document.documentElement.style.setProperty("--color-light", isNight ? "10, 10, 20" : "255, 255, 255");
@@ -57,7 +57,7 @@ const applyTheme = (theme) => {
 // function ensures that the button accurately reflects the state of the book list 
 // and provides a better user experience by preventing unnecessary actions
 
-const updateShowMoreButton = () => {                             // calculating remaining books
+const showMoreButton = () => {                             // calculating remaining books
   const remainingBooks = matches.length - page * BOOKS_PER_PAGE; // matches.length gives the total number of books that match the current search/filter criteria
   const button = getElement("[data-list-button]");               // update Button's Inner HTML 
   button.innerHTML = `
@@ -82,7 +82,7 @@ const openOverlay = (selector, focusSelector = null) => {
 // function filters the books array based on the provided filters object containing 
 // search criteria for title, author, and genre
 
-const applySearchFilters = (filters) => {
+const searchFilters = (filters) => {
   const { title, author, genre } = filters;
     // filter method creates a new array with all elements that pass the test implemented by the provided function
   return books.filter(book => {  
@@ -121,14 +121,14 @@ getElement("[data-list-close]").addEventListener("click", () => closeOverlay("[d
 
 // Handle settings form submission to apply the selected theme
 handleFormSubmit("[data-settings-form]", ({ theme }) => {
-  applyTheme(theme);
+  colourTheme(theme);
   closeOverlay("[data-settings-overlay]");
 });
 
 // Handle search form submission to filter books and update the display,
 // scrolls the window to the top, and closes any search overlay
 handleFormSubmit("[data-search-form]", (filters) => {
-  matches = applySearchFilters(filters);
+  matches = searchFilters(filters);
   page = 1;
   // Gets an element with the attribute [data-list-message] and toggles the CSS class list__message_show based on whether matches has any items
   getElement("[data-list-message]").classList.toggle("list__message_show", matches.length < 1);
@@ -136,9 +136,9 @@ handleFormSubmit("[data-search-form]", (filters) => {
   getElement("[data-list-items]").innerHTML = "";
   // The first argument is a slice of the matches array, containing items from index 0 to BOOKS_PER_PAGE
   // Second argument is an element where the book previews will be inserted
-  createBookPreviews(matches.slice(0, BOOKS_PER_PAGE), getElement("[data-list-items]")); 
+  bookPreviews(matches.slice(0, BOOKS_PER_PAGE), getElement("[data-list-items]")); 
   // Updates the "show more" button if it exists
-  updateShowMoreButton();
+  showMoreButton();
   // Scrolls the window to the top with a smooth animation when the search operation is performed
   // Provides a smooth user experience by scrolling back to the top of the page after the search is completed
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -153,9 +153,9 @@ handleFormSubmit("[data-search-form]", (filters) => {
 // Adds an event listener to an element with the attribute [data-list-button]
 getElement("[data-list-button]").addEventListener("click", () => {
     // Represents the range of books to be displayed when the "Show more" button is clicked
-  createBookPreviews(matches.slice(page * BOOKS_PER_PAGE, (page + 1) * BOOKS_PER_PAGE), getElement("[data-list-items]"));
+  bookPreviews(matches.slice(page * BOOKS_PER_PAGE, (page + 1) * BOOKS_PER_PAGE), getElement("[data-list-items]"));
   page++;  // increments the value of the variable page by 1
-  updateShowMoreButton();
+  showMoreButton();
 });
 
 // Handle book item click to show book details in an overlay
@@ -180,7 +180,7 @@ getElement("[data-list-items]").addEventListener("click", (event) => {
 // Initial setup: create genre and author options, apply theme, display initial books, and update the "Show more" button
 createOptions(genres, "All Genres", getElement("[data-search-genres]"));
 createOptions(authors, "All Authors", getElement("[data-search-authors]"));
-applyTheme(window.matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "day");
-createBookPreviews(matches.slice(0, BOOKS_PER_PAGE), getElement("[data-list-items]"));
-updateShowMoreButton();
+colourTheme(window.matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "day");
+bookPreviews(matches.slice(0, BOOKS_PER_PAGE), getElement("[data-list-items]"));
+showMoreButton();
 
